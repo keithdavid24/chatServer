@@ -21,8 +21,5 @@ const MessageSchema = new mongoose.Schema({
     ref: 'Room', // Reference to the "Room" model
     required: true,
   },
-
-  
-  
 });
 module.exports = mongoose.model('Messages', MessageSchema);
