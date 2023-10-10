@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const Room = require('../models/room.model');
+const Room = require('../models/messageRooms.model');
+const validateSession = require("../middleware/vadlidateSession");
 
 // Error response function
 function errorResponse(res, err) {
@@ -7,7 +8,7 @@ function errorResponse(res, err) {
 }
 
 // Create a new room
-router.post('/rooms', async (req, res) => {
+router.post('/rooms', validateSession, async (req, res) => {
   try {
     const { title, description } = req.body;
     const ownerId = req.user._id; // Assuming req.user contains user information
@@ -47,7 +48,7 @@ router.get('/rooms/:id', async (req, res) => {
 });
 
 // Get all rooms
-router.get('/rooms', async (req, res) => {
+router.get('/allRooms', async (req, res) => {
   try {
     const rooms = await Room.find();
 
@@ -58,7 +59,8 @@ router.get('/rooms', async (req, res) => {
 });
 
 // Update a room by ID
-router.patch('/rooms/:id', async (req, res) => {
+router.patch('/updateRooms/:id', validateSession, async (req, res) => {
+  console.log("this is req.params", req.params);
   try {
     const roomId = req.params.id;
     const ownerId = req.user._id; // Assuming req.user contains user information
@@ -86,20 +88,18 @@ router.patch('/rooms/:id', async (req, res) => {
 });
 
 // Delete a room by ID
-router.delete('/rooms/:id', async (req, res) => {
+router.delete('/deleteRooms/:id', validateSession, async (req, res) => {
   try {
     const roomId = req.params.id;
     const ownerId = req.user._id; // Assuming req.user contains user information
 
-    const room = await Room.findOne({ _id: roomId, ownerId });
+    const deletedRoom = await Room.deleteOne({ _id: roomId, ownerId });
 
-    if (!room) {
+    if (!deletedRoom.deletedCount) {
       return res.status(404).json({ error: 'Room not found' });
     }
 
-    await room.remove();
-
-    res.status(200).json({ message: 'Room deleted' });
+    res.status(200).json({ message: 'Room deleted', deletedRoom});
   } catch (err) {
     errorResponse(res, err);
   }

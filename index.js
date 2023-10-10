@@ -7,6 +7,7 @@ const app = express();
 const mongoose = require('mongoose');
 
 const user = require("./controllers/user.controllers");
+const rooms = require("./controllers/room.controller");
 
 const {PORT, MONGO} =process.env;
 
@@ -20,6 +21,8 @@ db.once('open', () => console.log(`Connected to: ${MONGO}`))
 app.use(express.json());
 
 app.use("/user", user);
+
+app.use("/room", rooms);
 
 app.listen(PORT, () => console.log(`App is listening on port ${PORT}`));
 
