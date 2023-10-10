@@ -6,6 +6,9 @@ const bcrypt = require('bcrypt');
 
 // User Signup
 router.post('/signup', async (req, res) => {
+    encryptPassword('myPassword');
+    encryptPassword('myPassword')
+    encryptPassword('new_password')
     try{
        const user = new User({
         userserName: req.body.UserName,
@@ -15,7 +18,18 @@ router.post('/signup', async (req, res) => {
         
        })
        const newUser = await user.save();
+
+       const token = jwt.sign({
+           id: newUser['_id']},process.env.JWT, {expiresIn: '1 day'});
+           
+        res.status(200).json({
+            user: newUser,  
+            message: 'Success! User Created!',
+            token
+        })
+        
     }
+    
     catch(err){
         res.status(500).json(err);
     }
@@ -27,7 +41,7 @@ try{
     const {email, password} = req.body;
    const user = await User.findOne({email, password});
    if(!user) throw new Error('Email or Password does not match');
-   const token = jwt.sign({
+    const token = jwt.sign({
        id: user._id,},
        process.env.JWT,{expiresIn: '1 day'})
        
@@ -36,9 +50,10 @@ try{
         user,
         token
         });
-    res.status(200).json(user);
+   
 }catch(err){
     res.status(500).json(err);
+
 }
 })
 module.exports = router;
