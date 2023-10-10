@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const Message = requrie('../models/messages.model');
-const validateSession = require('../middleware/validateSession');
+const Message = require('../models/messages.model');
+const validateSession = require('../middleware/vadlidateSession');
 
 function errorResponse(res, err) {
   res.status(500).json({ ERROR: err.message });
@@ -25,20 +25,20 @@ router.post("/newMessage/:room_id", validateSession, async (req, res) =>{
 });
                 
 //get all messages per room
-router.get("/:rooms", async (req,res) => {
-  try {
+// router.get("/:rooms", async (req,res) => {
+//   try {
 
-  }
-});
+//   }
+// });
 
 //update message //PATCH
 router.patch()
 
 //delete messages //messages should only be updated and deleted by the owner
-router.delete("/:id", async (req, res) =>{
-  if (){
+// router.delete("/:id", async (req, res) =>{
+//   if (){
 
-  }
-});
+//   }
+// });
 
 module.exports = router;
