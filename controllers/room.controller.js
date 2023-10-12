@@ -60,7 +60,6 @@ router.get('/allRooms', async (req, res) => {
 
 // Update a room by ID
 router.patch('/updateRooms/:id', validateSession, async (req, res) => {
-  console.log("this is req.params", req.params);
   try {
     const roomId = req.params.id;
     const ownerId = req.user._id; // Assuming req.user contains user information
