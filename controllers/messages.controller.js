@@ -32,7 +32,7 @@ router.get('/allMessages/:room', validateSession, async (req, res) => {
   try {
     // Check if the user is authenticated with validateSession middleware
     if (!req.user) {
-      return res.status(403).json({ error: 'Authentication required' });
+      res.status(403).json({ error: 'Authentication required' });
     }
 
     // Retrieve all messages
@@ -40,7 +40,7 @@ router.get('/allMessages/:room', validateSession, async (req, res) => {
     const messages = await Message.find({room: roomId});
 
     if (!messages || messages.length === 0) {
-      return res.status(404).json({ message: 'No messages found' });
+      res.status(404).json({ message: 'No messages found' });
     }
 
     res.status(200).json({ messages });
@@ -60,12 +60,12 @@ router.patch('/updateMessage/:room/:message', validateSession, async (req, res) 
     const message = await Message.findOne({ _id: messageId, room});
 
     if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
+      res.status(404).json({ error: 'Message not found' });
     }
 
     // Check if the user is the owner of the message
     if (message.owner !== owner) {
-      return res.status(403).json({ error: 'You are not the owner of this message' });
+      res.status(403).json({ error: 'You are not the owner of this message' });
     }
 
     const text = req.body.text;
@@ -93,18 +93,18 @@ router.delete('/deleteMessage/:room/:message', validateSession, async (req, res)
     const message = await Message.findById(messageId);
 
     if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
+      res.status(404).json({ error: 'Message not found' });
     }
 
     if (message.owner.toString() !== owner.toString()) {
-      return res.status(403).json({ error: 'You are not the owner of this message' });
+      res.status(403).json({ error: 'You are not the owner of this message' });
     }
 
     // If the user is the owner, proceed with deletion
     const deletedMessage = await Message.deleteOne({ _id: messageId, room });
 
     if (!deletedMessage.deletedCount) {
-      return res.status(404).json({ error: 'Message not found' });
+      res.status(404).json({ error: 'Message not found' });
     }
 
     res.status(200).json({ message: 'Message deleted', deletedMessage });
